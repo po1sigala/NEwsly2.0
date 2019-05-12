@@ -40,9 +40,23 @@ $(document).ready(function() {
     }) 
     //make clicking the last searched text queries the api the same way as if we typed and submitted that text in the search box
     $(document).on("click", "#lastSearch", function(){
-      console.log();
-      $(".searchBox").val($("#lastSearch").text());
-      clearPassAndStore();
+        //set the value of the search bar to the text in the last search section
+     var search= $("#lastSearch").text();
+     console.log(search);
+      //get the last checked boxes from memory
+      var checkedBoxes= localStorage.getItem("checkedBoxes");
+      console.log(checkedBoxes);
+      //change the string to an array
+      checkedBoxes= checkedBoxes.split(",")
+      console.log("this should be an array of id's"+ checkedBoxes);
+      //clear out the last search
+      emptyRows()
+      //run the for loop that ensures our site returns results from every checked box site
+      for (i = 0; i < checkedBoxes.length; i++) {
+        var site = checkedBoxes[i]; //we are setting var site to the element at index i
+  
+        searchSites(search, "source", site); //we are running the searchsites function with the result of selectedsites{i}
+      }
     })
   
     //below is a function that listens for when user clicks an article link and stores it in memory
@@ -87,7 +101,8 @@ $(document).ready(function() {
           return this.id; //our arrary is composed of the id's of the buttons. these ids match the newsAPI id search keys
         })
         .get(); //turns our jQuery array into a javascript array
-  
+            
+    
       //The nature of the sorting of this API's resonses means we have to use a for loop and run multiple queries if we want to ensure each source is queried for the input
       for (i = 0; i < checkedBoxes.length; i++) {
         var site = checkedBoxes[i]; //we are setting var site to the element at index i
@@ -100,6 +115,13 @@ $(document).ready(function() {
       localStorage.clear("lastSearch");
       localStorage.setItem("lastSearch", search);
       $("#lastSearch").text(localStorage.getItem("lastSearch"));
+
+      //turn the array of checked boxes in to a string to store in local storage for later searches
+    JSON.stringify(checkedBoxes);
+    //clear previous search
+    localStorage.clear("checkedBoxes");
+    //store this string into our local storage so it can be called when our user clicks their "last searched" button
+    localStorage.setItem("checkedBoxes", checkedBoxes);
       
     }
   
