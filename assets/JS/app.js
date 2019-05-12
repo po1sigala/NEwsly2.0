@@ -16,15 +16,21 @@ $(document).ready(function() {
     })
     var numOfCards = 0;
   
+//below we set up the page
+//====================================================================================================================================
     //clear out the example cards
     $(".cardRow1").empty();
   
     //get the trending topic
     searchSites("us", "headline");
     // on ready we want any last searched terms to be displayed from local storage
-    $("#lastSearch").text(localStorage.getItem("lastSearch"));
+    getLastSearch();
     
-  
+    
+
+ //below are my click funtions   
+  //====================================================================================================================================
+
     //query our news api for our users search when they click search
     $("#searchButton").on("click", function() {
       clearPassAndStore();
@@ -72,12 +78,22 @@ $(document).ready(function() {
         .attr("target", "_blank");
       $("#lastSite").append(linktosite);
     });
+
+
+    //below we initialize some bootstrap stuff
+//====================================================================================================================================
+
   //below we have logic which governs our popovers. It should dismiss any popover on the users next click
     $('.popover-dismiss').popover({
       trigger: 'focus'
     })
   
+    //below are all my functions
+//====================================================================================================================================
+
+//function to clear rows and reset card counter
     function emptyRows(){
+    numOfCards=0
       $(".cardRow1").empty()
       $(".cardRow2").empty()
       $(".cardRow3").empty()
@@ -86,9 +102,8 @@ $(document).ready(function() {
       $(".cardRow6").empty()
       $(".cardRow7").empty()
     }
-  
+// function to run empty rows, create the variables that make up our query url, and pass those variables into search sites. these variables are stored locally
     function clearPassAndStore(){
-      numOfCards = 0;
   
       emptyRows(); //clear out the example cards
       var search = $(".searchBox").val(); //deaclare a search variable set to the text of the search box
@@ -112,14 +127,12 @@ $(document).ready(function() {
       // searchSites(selectedSites);//if working correctly search sites will run with a source parameter of i aka which site the user wants to check
   
       //below we want to add searches to local storage for next time the user loads
-      localStorage.clear("lastSearch");
+
       localStorage.setItem("lastSearch", search);
       $("#lastSearch").text(localStorage.getItem("lastSearch"));
 
       //turn the array of checked boxes in to a string to store in local storage for later searches
     JSON.stringify(checkedBoxes);
-    //clear previous search
-    localStorage.clear("checkedBoxes");
     //store this string into our local storage so it can be called when our user clicks their "last searched" button
     localStorage.setItem("checkedBoxes", checkedBoxes);
       
@@ -226,7 +239,11 @@ $(document).ready(function() {
             */
       });
     }
-  
+    function getLastSearch(){
+        //get the last searched items from memory
+        var lastSearch= localStorage.getItem("lastSearch");
+        $("#lastSearch").text(lastSearch);
+    }
     // below is where my twitter request is happening it should run when the page refreshes and get the trending tweets globally
   });
   
